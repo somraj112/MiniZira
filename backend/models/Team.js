@@ -11,6 +11,11 @@ const teamSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    inviteCode: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
