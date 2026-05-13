@@ -49,13 +49,28 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const googleLogin = async (credential) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await API.post("/auth/google", { credential });
+      localStorage.setItem("user", JSON.stringify(res.data));
+      setUser(res.data);
+    } catch (err) {
+      setError(err.response?.data?.message || "Google Login failed");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem("user");
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, signup, logout, loading, error }}>
+    <AuthContext.Provider value={{ user, login, signup, googleLogin, logout, loading, error }}>
       {children}
     </AuthContext.Provider>
   );

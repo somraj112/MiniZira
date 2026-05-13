@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, Link } from "react-router-dom";
+import { GoogleLogin } from "@react-oauth/google";
 
 const Signup = () => {
-  const { signup, loading, error } = useAuth();
+  const { signup, googleLogin, loading, error } = useAuth();
   const navigate = useNavigate();
 
   const [name, setName] = useState("");
@@ -18,6 +19,13 @@ const Signup = () => {
     } catch (err) {
       // Error is handled by context
     }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      await googleLogin(credentialResponse.credential);
+      navigate("/");
+    } catch (err) {}
   };
 
   return (
@@ -84,6 +92,28 @@ const Signup = () => {
             >
               {loading ? "Creating account..." : "Create Account"}
             </button>
+          </div>
+
+          <div className="mt-6">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300"></div>
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500">
+                  Or continue with
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-6 flex justify-center">
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => {
+                  console.log("Login Failed");
+                }}
+              />
+            </div>
           </div>
         </form>
       </div>
